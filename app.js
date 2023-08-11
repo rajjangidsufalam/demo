@@ -4,9 +4,11 @@ const auth = require("./auth");
 const jwt = require("jsonwebtoken");
 const { secretKey } = require("./config");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors())
 
 // User Register
 app.post("/api/register", (req, res) => {
@@ -110,9 +112,9 @@ app.put("/api/users/:id", (req, res) => {
   });
 
   const userId = req.params.id;
-  const { password } = req.body;
-  if (!password) {
-    return res.status(400).json({ message: "New password is required" });
+  const { username } = req.body;
+  if (!username) {
+    return res.status(400).json({ message: "Username is required" });
   }
 
   const user = auth.findUserById(userId);
@@ -120,9 +122,9 @@ app.put("/api/users/:id", (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  user.password = bcrypt.hashSync(password, 10);
+  user.username = username;
   auth.updateUser(user);
-  res.json({ message: "Password updated successfully" });
+  res.json({ message: "UserName Updated Successfully" });
 });
 
 // Delete a user
